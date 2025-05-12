@@ -25,6 +25,8 @@ public class SecurityConfig {
 
 	private final JwtUtil jwtUtil;
 
+	private static final String[] PUBLIC_URLS = { "/auth/**", "swagger-ui.html", "/v3/api-docs/**", "/h2-console/**" };
+
 	public SecurityConfig(JwtUtil jwtUtil) {
 		this.jwtUtil = jwtUtil;
 	}
@@ -33,7 +35,7 @@ public class SecurityConfig {
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
 		http.csrf(AbstractHttpConfigurer::disable).sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
-				.authorizeHttpRequests(auth -> auth.requestMatchers("/auth/**", "swagger-ui.html", "/v3/api-docs/**","/h2-console").permitAll().anyRequest().authenticated())
+				.authorizeHttpRequests(auth -> auth.requestMatchers(PUBLIC_URLS).permitAll().anyRequest().authenticated())
 				.addFilterBefore(new JwtAuthFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
 
 		return http.build();

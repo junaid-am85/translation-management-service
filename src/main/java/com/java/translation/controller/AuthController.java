@@ -2,6 +2,7 @@ package com.java.translation.controller;
 
 import com.java.translation.utility.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,9 +13,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/auth")
 public class AuthController {
 
-	public static final String USERNAME = "admin";
+	@Value("${auth.username:admin}")
+	private String name;
 
-	public static final String PASSWORD = "admin";
+	@Value("${auth.password:admin}")
+	private String pass;
 
 	private final JwtUtil jwtUtil;
 
@@ -26,7 +29,7 @@ public class AuthController {
 	@PostMapping("/login")
 	public ResponseEntity<?> login(@RequestParam String username, @RequestParam String password) {
 
-		if (USERNAME.equals(username) && PASSWORD.equals(password)) {
+		if (name.equals(username) && pass.equals(password)) {
 			String token = jwtUtil.generateToken(username);
 
 			return ResponseEntity.ok().body("{\"token\": \"" + token + "\"}");
